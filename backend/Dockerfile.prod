@@ -1,0 +1,98 @@
+# Multi-stage production Dockerfile for QR Studio Backend
+FROM python:3.11-slim as builder
+
+# Set build arguments
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    libjpeg-dev \
+    zlib1g-dev \
+    libfreetype6-dev \
+    liblcms2-dev \
+    libopenjp2-7-dev \
+    libtiff5-dev \
+    libwebp-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt /tmp/
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Production stage
+FROM python:3.11-slim as production
+
+# Set labels
+LABEL maintainer="QR Studio Team" \
+      version="${VERSION}" \
+      description="QR Studio Backend - Production" \
+      build-date="${BUILD_DATE}" \
+      vcs-ref="${VCS_REF}"
+
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y \
+    libjpeg62-turbo \
+    zlib1g \
+    libfreetype6 \
+    liblcms2-2 \
+    libopenjp2-7 \
+    libtiff5 \
+    libwebp6 \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Create non-root user
+RUN groupadd -r qruser && useradd -r -g qruser -u 1000 qruser
+
+# Set working directory
+WORKDIR /app
+
+# Copy application code
+COPY --chown=qruser:qruser . .
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/tmp && \
+    chown -R qruser:qruser /app
+
+# Switch to non-root user
+USER qruser
+
+# Set environment variables
+ENV PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    ENV=production \
+    PORT=8000
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8000/health', timeout=5)" || exit 1
+
+# Run the application
+CMD ["gunicorn", "app.main:app", \
+     "--worker-class", "uvicorn.workers.UvicornWorker", \
+     "--workers", "4", \
+     "--bind", "0.0.0.0:8000", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-", \
+     "--log-level", "info", \
+     "--timeout", "120", \
+     "--keep-alive", "5", \
+     "--max-requests", "1000", \
+     "--max-requests-jitter", "100"]

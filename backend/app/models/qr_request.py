@@ -2,6 +2,7 @@ from pydantic import BaseModel, HttpUrl, Field, validator
 from typing import Optional, Literal
 from enum import Enum
 
+
 class QRStyle(str, Enum):
     SQUARE = "square"
     ROUNDED = "rounded"
@@ -10,20 +11,24 @@ class QRStyle(str, Enum):
     BARS_VERTICAL = "bars-vertical"
     BARS_HORIZONTAL = "bars-horizontal"
 
+
 class EyeShape(str, Enum):
     RECT = "rect"
     ROUNDED = "rounded"
     CIRCLE = "circle"
 
+
 class EyeStyle(str, Enum):
     STANDARD = "standard"
     CIRCLE_RING = "circle-ring"
+
 
 class ErrorCorrectionLevel(str, Enum):
     L = "L"
     M = "M"
     Q = "Q"
     H = "H"
+
 
 class QRGenerationRequest(BaseModel):
     url: HttpUrl
@@ -44,15 +49,16 @@ class QRGenerationRequest(BaseModel):
     compress_level: int = Field(default=6, ge=0, le=9)
     quantize_colors: int = Field(default=96, ge=0, le=256)
 
-    @validator('dark_color', 'light_color')
-    def validate_hex_color(cls, v):
-        if not v.startswith('#') or len(v) != 7:
-            raise ValueError('Color must be a valid hex color (e.g., #000000)')
+    @validator("dark_color", "light_color")
+    def validate_hex_color(cls, v: str) -> str:
+        if not v.startswith("#") or len(v) != 7:
+            raise ValueError("Color must be a valid hex color (e.g., #000000)")
         try:
             int(v[1:], 16)
         except ValueError:
-            raise ValueError('Color must be a valid hex color')
+            raise ValueError("Color must be a valid hex color")
         return v
+
 
 class QRPreset(BaseModel):
     name: str
@@ -63,6 +69,7 @@ class QRPreset(BaseModel):
     logo_scale: float = 0.2
     eye_radius: float = 1.0
 
+
 class QRPresetsResponse(BaseModel):
     presets: dict[str, QRPreset] = {
         "mobile_app": QRPreset(
@@ -72,7 +79,7 @@ class QRPresetsResponse(BaseModel):
             eye_shape=EyeShape.ROUNDED,
             error_correction=ErrorCorrectionLevel.M,
             logo_scale=0.2,
-            eye_radius=2.0
+            eye_radius=2.0,
         ),
         "print_media": QRPreset(
             name="Print Media",
@@ -81,7 +88,7 @@ class QRPresetsResponse(BaseModel):
             eye_shape=EyeShape.RECT,
             error_correction=ErrorCorrectionLevel.H,
             logo_scale=0.15,
-            eye_radius=0.0
+            eye_radius=0.0,
         ),
         "social_media": QRPreset(
             name="Social Media",
@@ -90,7 +97,7 @@ class QRPresetsResponse(BaseModel):
             eye_shape=EyeShape.CIRCLE,
             error_correction=ErrorCorrectionLevel.L,
             logo_scale=0.25,
-            eye_radius=1.5
+            eye_radius=1.5,
         ),
         "website": QRPreset(
             name="Website",
@@ -99,6 +106,6 @@ class QRPresetsResponse(BaseModel):
             eye_shape=EyeShape.ROUNDED,
             error_correction=ErrorCorrectionLevel.M,
             logo_scale=0.2,
-            eye_radius=1.8
-        )
+            eye_radius=1.8,
+        ),
     }

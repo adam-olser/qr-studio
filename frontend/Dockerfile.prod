@@ -1,0 +1,72 @@
+# Multi-stage production Dockerfile for QR Studio Frontend
+FROM node:18-alpine as builder
+
+# Set build arguments
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+ARG VITE_API_URL
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production --silent
+
+# Copy source code
+COPY . .
+
+# Set build environment variables
+ENV NODE_ENV=production \
+    VITE_API_URL=${VITE_API_URL}
+
+# Build the application
+RUN npm run build && \
+    npm run type-check
+
+# Production stage with Nginx
+FROM nginx:1.25-alpine as production
+
+# Set labels
+LABEL maintainer="QR Studio Team" \
+      version="${VERSION}" \
+      description="QR Studio Frontend - Production" \
+      build-date="${BUILD_DATE}" \
+      vcs-ref="${VCS_REF}"
+
+# Install security updates
+RUN apk update && apk upgrade && \
+    apk add --no-cache ca-certificates && \
+    rm -rf /var/cache/apk/*
+
+# Copy built application from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY nginx.prod.conf /etc/nginx/conf.d/default.conf
+
+# Create nginx user and set permissions
+RUN addgroup -g 1000 -S nginx-app && \
+    adduser -u 1000 -D -S -G nginx-app nginx-app && \
+    chown -R nginx-app:nginx-app /usr/share/nginx/html && \
+    chown -R nginx-app:nginx-app /var/cache/nginx && \
+    chown -R nginx-app:nginx-app /var/log/nginx && \
+    chown -R nginx-app:nginx-app /etc/nginx/conf.d && \
+    touch /var/run/nginx.pid && \
+    chown -R nginx-app:nginx-app /var/run/nginx.pid
+
+# Switch to non-root user
+USER nginx-app
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

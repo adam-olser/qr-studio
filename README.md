@@ -4,13 +4,14 @@ A modern, full-stack QR code generator with advanced styling capabilities and lo
 
 ## Features
 
-- 🎨 **Advanced Styling**: Multiple module styles (square, rounded, dots, gapped)
-- 🖼️ **Logo Integration**: Embed logos with customizable positioning and backgrounds
-- 🔧 **Flexible Configuration**: Error correction levels, eye shapes, corner rounding
+- 🎨 **Advanced Styling**: 6 module styles (square, rounded, dots, gapped, bars) with custom colors
+- 🖼️ **Logo Integration**: Upload logos with smart positioning and background customization
+- ⚙️ **Flexible Configuration**: Error correction levels, eye shapes/styles, corner rounding
+- 🎯 **Quick Presets**: 6 built-in presets (Classic, Modern, Dots, Retro, Dark, Neon)
 - 🚀 **High Performance**: FastAPI backend with optimized image processing
-- 🎯 **Modern UI**: React frontend with shadcn/ui components
-- 📱 **Responsive**: Works on desktop, tablet, and mobile
-- 🔗 **API-First**: Easy integration with other services
+- 💻 **Modern UI**: React + TypeScript frontend with shadcn/ui components
+- 📱 **Responsive**: Works seamlessly on desktop, tablet, and mobile
+- 🔗 **API-First**: RESTful API for easy integration
 
 ## Quick Start
 
@@ -21,17 +22,24 @@ A modern, full-stack QR code generator with advanced styling capabilities and lo
 git clone <repository-url>
 cd qr-studio
 
-# Start with Docker Compose
+# Start with Docker Compose (recommended)
 docker-compose up -d
 
-# Or run separately:
+# Access the application
+# Frontend: http://localhost:5173
+# Backend API: http://localhost:8000
+# API Docs: http://localhost:8000/docs
+```
 
+**Manual Setup:**
+
+```bash
 # Backend
 cd backend
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8000
 
-# Frontend
+# Frontend (new terminal)
 cd frontend
 npm install
 npm run dev
@@ -40,26 +48,42 @@ npm run dev
 ### Production
 
 ```bash
+# Production deployment (coming soon)
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ## API Usage
 
-```typescript
-// Generate QR code
-const response = await fetch('/api/v1/qr/generate', {
-  method: 'POST',
-  body: formData // includes URL, logo, and options
-})
+### Generate QR Code
 
-const qrImage = await response.blob()
+```bash
+curl -X POST "http://localhost:8000/api/v1/qr/generate-form" \
+  -F "url=https://example.com" \
+  -F "style=rounded" \
+  -F "dark_color=#000000" \
+  -F "light_color=#FFFFFF" \
+  -F "size=1024" \
+  -F "logo=@logo.png"
+```
+
+### Get Available Presets
+
+```bash
+curl "http://localhost:8000/api/v1/qr/presets"
+```
+
+### Validate URL
+
+```bash
+curl "http://localhost:8000/api/v1/qr/validate-url?url=https://example.com"
 ```
 
 ## Tech Stack
 
-- **Backend**: FastAPI, Python, Pillow, qrcode
+- **Backend**: FastAPI, Python, Pillow, qrcode, Pydantic
 - **Frontend**: React, TypeScript, Vite, shadcn/ui, Tailwind CSS
-- **Infrastructure**: Docker, Redis (caching), S3 (storage)
+- **Development**: Docker Compose, Redis
+- **Type Safety**: TypeScript (frontend), mypy (backend - planned)
 
 ## License
 
