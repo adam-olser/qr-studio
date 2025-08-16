@@ -52,9 +52,12 @@ services:
         value: "3600"
       - key: ADMIN_TOKEN
         fromSecret: ADMIN_TOKEN
+      - key: SECRET_KEY
+        fromSecret: SECRET_KEY
 
   - type: redis
     name: qr-studio-redis
     region: oregon
     plan: free
     maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
