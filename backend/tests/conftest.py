@@ -80,17 +80,10 @@ def test_client() -> TestClient:
 
 
 @pytest.fixture
-async def async_client(test_settings) -> AsyncGenerator[AsyncClient, None]:
+async def async_client() -> AsyncGenerator[AsyncClient, None]:
     """Async HTTP client for testing."""
-    # Override the settings dependency
-    from app.core.config import get_settings
-    app.dependency_overrides[get_settings] = lambda: test_settings
-    
     async with AsyncClient(app=app, base_url="http://test") as client:
         yield client
-    
-    # Clean up
-    app.dependency_overrides.clear()
 
 
 @pytest.fixture
