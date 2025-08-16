@@ -108,11 +108,11 @@ Deploy QR Studio for **FREE** using GitHub and cloud services:
 
 **Free Services Used:**
 
-- Frontend: GitHub Pages (Free)
-- Backend: Railway.app or Render.com (Free tier)
-- Database: PostgreSQL (Free tier)
-- Cache: Redis (Free tier)
-- CI/CD: GitHub Actions (Free)
+- Frontend: GitHub Pages (Free forever)
+- Backend: Render.com (Free forever)
+- Database: PostgreSQL on Render (Free forever)
+- Cache: Redis on Render (Free forever)
+- CI/CD: GitHub Actions (Free forever)
 
 **Total Monthly Cost: $0** 💰
 

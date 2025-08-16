@@ -4,33 +4,23 @@ Deploy QR Studio using **100% free services** - no credit card required!
 
 ## 🎯 Quick Deployment (20 minutes)
 
-### **Backend: Railway.app (Recommended)**
+### **Backend: Render.com (Recommended - Free Forever)**
 
-1. **Sign up**: [railway.app](https://railway.app) with GitHub
-2. **New Project** → **Deploy from GitHub repo** → Select your QR Studio repo
-3. **Add PostgreSQL**: New Service → Database → PostgreSQL
-4. **Add Redis**: New Service → Database → Redis
-5. **Configure backend service**:
-
-   ```
-   Root Directory: backend
-   Start Command: gunicorn app.main:app -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:$PORT
-   ```
-
-6. **Set environment variables**:
+1. **Sign up**: [render.com](https://render.com) with GitHub
+2. **New Blueprint** → Connect your QR Studio repository
+3. **Services auto-created** from `render.yaml` file
+4. **Add secrets** in Render dashboard:
    ```bash
    SECRET_KEY=<generate-32-char-hex>
    ADMIN_TOKEN=<generate-32-char-hex>
-   ENV=production
-   CORS_ORIGINS=https://yourusername.github.io
-   REDIS_URL=${{Redis.REDIS_URL}}
-   DATABASE_URL=${{Postgres.DATABASE_URL}}
    ```
+
+**Note**: Services sleep after 15min inactivity (30-60s cold start)
 
 ### **Frontend: GitHub Pages**
 
 1. **Repository Settings** → **Pages** → **Source: GitHub Actions**
-2. **Add GitHub Secret**: `VITE_API_URL` = `https://your-app.railway.app`
+2. **Add GitHub Secret**: `VITE_API_URL` = `https://your-app.onrender.com`
 3. **Push to main** - GitHub Actions will deploy automatically
 
 ### **Generate Secure Secrets**
@@ -44,25 +34,36 @@ echo "SECRET_KEY: $SECRET_KEY"
 echo "ADMIN_TOKEN: $ADMIN_TOKEN"
 ```
 
-## 🔄 Alternative: Render.com
+## 🔄 Alternative: Fly.io + Supabase
 
-If Railway doesn't work, use Render.com:
+For better performance (no cold starts):
 
-1. **Sign up**: [render.com](https://render.com) with GitHub
-2. **New Blueprint** → Connect GitHub repo
-3. Services auto-created from `render.yaml`
-4. **Add secrets** in Render dashboard:
-   - `SECRET_KEY`
-   - `ADMIN_TOKEN`
+1. **Backend on Fly.io**:
+
+   ```bash
+   # Install flyctl
+   curl -L https://fly.io/install.sh | sh
+   fly launch --no-deploy
+   fly secrets set SECRET_KEY=<your-secret>
+   fly secrets set ADMIN_TOKEN=<your-token>
+   fly deploy
+   ```
+
+2. **Database on Supabase**:
+   - Sign up at [supabase.com](https://supabase.com)
+   - Create project → Get DATABASE_URL from Settings
+   - Set: `fly secrets set DATABASE_URL=<supabase-url>`
+
+**Cost**: $5 credit/month (monitor usage)
 
 ## ✅ Verify Deployment
 
 ```bash
 # Check backend health
-curl https://your-app.railway.app/health
+curl https://your-app.onrender.com/health
 
 # Test QR generation
-curl -X POST "https://your-app.railway.app/api/v1/qr/generate-form" \
+curl -X POST "https://your-app.onrender.com/api/v1/qr/generate-form" \
   -F "url=https://example.com"
 
 # Visit your app
@@ -80,12 +81,12 @@ QR Studio includes built-in protection against abuse:
 
 ## 💰 Cost Breakdown
 
-| Service        | Free Tier       | Usage              |
-| -------------- | --------------- | ------------------ |
-| Railway.app    | $5 credit/month | ~$2-3/month        |
-| GitHub Pages   | Unlimited       | 100GB bandwidth    |
-| GitHub Actions | 2000 min/month  | ~50 min/month      |
-| **Total**      | **$0/month**    | Within free limits |
+| Service        | Free Tier    | Usage              |
+| -------------- | ------------ | ------------------ |
+| Render.com     | FREE Forever | 750 hours/month    |
+| GitHub Pages   | FREE Forever | 100GB bandwidth    |
+| GitHub Actions | FREE Forever | 2000 min/month     |
+| **Total**      | **$0/month** | Truly free forever |
 
 ## 🔧 Environment Variables
 
@@ -118,14 +119,14 @@ QR Studio includes built-in protection against abuse:
 
 **Getting rate limited?**
 
-- Check admin dashboard: `https://your-app.railway.app/admin/stats`
+- Check admin dashboard: `https://your-app.onrender.com/admin/stats`
 - Adjust limits in environment variables if needed
 
 ## 📚 Additional Resources
 
-- **API Documentation**: `https://your-app.railway.app/docs`
-- **Admin Dashboard**: `https://your-app.railway.app/admin/stats`
-- **Health Check**: `https://your-app.railway.app/health`
+- **API Documentation**: `https://your-app.onrender.com/docs`
+- **Admin Dashboard**: `https://your-app.onrender.com/admin/stats`
+- **Health Check**: `https://your-app.onrender.com/health`
 
 ---
 
