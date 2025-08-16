@@ -67,7 +67,7 @@ describe("QRGenerator", () => {
 
   it("renders without crashing with different states", () => {
     // Test with preview URL
-    mockUseQRGeneration.previewUrl = "mock-blob-url";
+    (mockUseQRGeneration as any).previewUrl = "mock-blob-url";
     const { rerender } = render(<QRGenerator />);
     expect(screen.getByText("QR Studio")).toBeInTheDocument();
 
@@ -79,7 +79,7 @@ describe("QRGenerator", () => {
 
     // Test with error state
     mockUseQRGeneration.isGenerating = false;
-    mockUseQRGeneration.error = "Failed to generate QR code";
+    (mockUseQRGeneration as any).error = "Failed to generate QR code";
     rerender(<QRGenerator />);
     expect(screen.getByText("QR Studio")).toBeInTheDocument();
   });

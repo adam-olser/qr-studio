@@ -56,7 +56,7 @@ class AbuseProtectionMiddleware(BaseHTTPMiddleware):
             # Add abuse protection headers
             self._add_protection_headers(response, client_ip)
 
-            return response
+            return response  # type: ignore
 
         except Exception as e:
             # Record error and let it propagate
@@ -66,7 +66,7 @@ class AbuseProtectionMiddleware(BaseHTTPMiddleware):
             # Still try to process the request
             try:
                 response = await call_next(request)
-                return response
+                return response  # type: ignore
             except Exception as inner_e:
                 logger.error(
                     f"Error processing request after middleware error: {inner_e}"
@@ -100,7 +100,7 @@ class AbuseProtectionMiddleware(BaseHTTPMiddleware):
         response: Response,
         client_ip: str,
         processing_time: float,
-    ):
+    ) -> None:
         """Record request metrics for monitoring"""
         # Record errors for abuse detection
         if response.status_code >= 400:
@@ -128,7 +128,7 @@ class AbuseProtectionMiddleware(BaseHTTPMiddleware):
             except ValueError:
                 pass
 
-    def _add_protection_headers(self, response: Response, client_ip: str):
+    def _add_protection_headers(self, response: Response, client_ip: str) -> None:
         """Add abuse protection related headers"""
         # Add rate limit headers
         if (

@@ -51,7 +51,7 @@ class AdvancedRateLimiter:
     Advanced rate limiter with adaptive limits and abuse detection
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.client_metrics: Dict[str, AbuseMetrics] = {}
         self.global_metrics = AbuseMetrics()
         self.blocked_ips: Set[str] = set()
@@ -244,7 +244,7 @@ class AdvancedRateLimiter:
 
         # Use a simple in-memory sliding window (in production, use Redis)
         if not hasattr(self, "_time_windows"):
-            self._time_windows = defaultdict(deque)
+            self._time_windows: Dict[str, deque] = defaultdict(deque)
 
         window = self._time_windows[key]
 
@@ -260,7 +260,7 @@ class AdvancedRateLimiter:
         window.append(now)
         return True
 
-    def _record_violation(self, client_ip: str, violation_type: str):
+    def _record_violation(self, client_ip: str, violation_type: str) -> None:
         """Record a violation for tracking"""
         if client_ip not in self.client_metrics:
             self.client_metrics[client_ip] = AbuseMetrics()
@@ -276,7 +276,7 @@ class AdvancedRateLimiter:
 
         logger.warning(f"Violation recorded for {client_ip}: {violation_type}")
 
-    def _escalate_threat_level(self, client_ip: str, reason: str):
+    def _escalate_threat_level(self, client_ip: str, reason: str) -> None:
         """Escalate threat level and potentially block IP"""
         if client_ip not in self.client_metrics:
             return
@@ -337,7 +337,7 @@ class AdvancedRateLimiter:
             "concurrent_requests": self.concurrent_requests[client_ip],
         }
 
-    async def record_error(self, client_ip: str, error_type: str):
+    async def record_error(self, client_ip: str, error_type: str) -> None:
         """Record an error for abuse pattern detection"""
         if client_ip not in self.client_metrics:
             self.client_metrics[client_ip] = AbuseMetrics()
@@ -375,11 +375,11 @@ class AdvancedRateLimiter:
 class ResourceMonitor:
     """Monitor system resources and adjust limits dynamically"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.cpu_threshold = 80.0  # CPU usage percentage
         self.memory_threshold = 80.0  # Memory usage percentage
         self.disk_threshold = 90.0  # Disk usage percentage
-        self.last_check = 0
+        self.last_check = 0.0
         self.check_interval = 30  # Check every 30 seconds
 
     async def check_resources(self) -> Dict[str, float]:
@@ -411,7 +411,7 @@ class ResourceMonitor:
 class CostProtection:
     """Protect against cost-related abuse"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.daily_limits = {
             "qr_generations": 10000,  # Max QR codes per day
             "file_uploads": 1000,  # Max file uploads per day
@@ -427,9 +427,9 @@ class CostProtection:
         }
 
         # Track usage (in production, use persistent storage)
-        self.daily_usage = defaultdict(int)
-        self.hourly_usage = defaultdict(int)
-        self.last_reset = {"daily": 0, "hourly": 0}
+        self.daily_usage: Dict[str, int] = defaultdict(int)
+        self.hourly_usage: Dict[str, int] = defaultdict(int)
+        self.last_reset = {"daily": 0.0, "hourly": 0.0}
 
     def check_limits(self, operation: str, cost: int = 1) -> Tuple[bool, str]:
         """Check if operation is within cost limits"""
@@ -455,7 +455,7 @@ class CostProtection:
 
         return True, ""
 
-    def _reset_counters(self):
+    def _reset_counters(self) -> None:
         """Reset usage counters when time periods expire"""
         now = time.time()
 

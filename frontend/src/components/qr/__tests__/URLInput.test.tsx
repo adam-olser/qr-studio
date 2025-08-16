@@ -43,12 +43,8 @@ describe("URLInput", () => {
       <URLInput
         {...mockProps}
         value="invalid-url"
-        isValid={false}
         validation={{
           valid: false,
-          url: "invalid-url",
-          length: 11,
-          max_length: 2000,
           error: "Invalid URL format",
         }}
       />
