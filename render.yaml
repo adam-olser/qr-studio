@@ -51,9 +51,9 @@ services:
       - key: THIRD_BLOCK_DURATION
         value: "3600"
       - key: ADMIN_TOKEN
-        fromSecret: ADMIN_TOKEN
+        value: "change-this-admin-token-in-render-dashboard"
       - key: SECRET_KEY
-        fromSecret: SECRET_KEY
+        value: "change-this-secret-key-in-render-dashboard"
 
   - type: redis
     name: qr-studio-redis
