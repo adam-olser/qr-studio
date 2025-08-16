@@ -20,7 +20,7 @@ Deploy QR Studio using **100% free services** - no credit card required!
 ### **Frontend: GitHub Pages**
 
 1. **Repository Settings** → **Pages** → **Source: GitHub Actions**
-2. **Add GitHub Secret**: `VITE_API_URL` = `https://your-app.onrender.com`
+2. **Add GitHub Secret**: `VITE_API_URL` = `https://qr-studio-backend.onrender.com`
 3. **Push to main** - GitHub Actions will deploy automatically
 
 ### **Generate Secure Secrets**
