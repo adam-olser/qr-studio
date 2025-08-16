@@ -249,7 +249,9 @@ class QRApiClient {
 }
 
 // Create and export singleton instance
-export const qrClient = new QRApiClient();
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+console.log(`[QR API Client] Using API URL: ${apiUrl}`);
+export const qrClient = new QRApiClient(apiUrl);
 
 // Export class for testing
 export default QRApiClient;
