@@ -47,9 +47,16 @@ class AbuseProtectionMiddleware(BaseHTTPMiddleware):
                 is_allowed, error_response = await check_abuse_protection(request)
                 if not is_allowed and error_response:
                     # Log the blocked request
+                    body_text = "Unknown reason"
+                    if hasattr(error_response, 'body') and error_response.body:
+                        if isinstance(error_response.body, bytes):
+                            body_text = error_response.body.decode()
+                        elif isinstance(error_response.body, memoryview):
+                            body_text = bytes(error_response.body).decode()
+                        else:
+                            body_text = str(error_response.body)
                     logger.warning(
-                        f"Request blocked from {client_ip} to {request.url.path}: "
-                        f"{error_response.body.decode() if hasattr(error_response, 'body') else 'Unknown reason'}"
+                        f"Request blocked from {client_ip} to {request.url.path}: {body_text}"
                     )
                     return error_response
 
