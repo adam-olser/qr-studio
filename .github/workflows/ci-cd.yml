@@ -26,12 +26,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python 3.11
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Cache Python dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
@@ -128,21 +128,21 @@ jobs:
           cd frontend
           npm run build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://your-backend-url.railway.app' }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://your-backend-url.onrender.com' }}
 
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
 
-  # Deploy Backend (Railway.app example)
+  # Deploy Backend (Render.com example)
   deploy-backend:
     needs: [backend-test, frontend-test]
     runs-on: ubuntu-latest
@@ -151,10 +151,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy to Railway
+      - name: Deploy to Render
         run: |
           echo "Backend deployment would happen here"
-          echo "Railway CLI deployment or webhook trigger"
-          echo "See Railway.app documentation for specific deployment steps"
-          # Railway deployment would be configured through Railway's dashboard
-          # or using Railway CLI with proper authentication
+          echo "Render auto-deploys from GitHub when connected"
+          echo "See Render.com documentation for webhook deployment"
+          # Render deployment is typically configured through Render's dashboard
+          # Auto-deployment from GitHub repository is the recommended approach
