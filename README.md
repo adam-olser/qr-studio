@@ -2,15 +2,13 @@
 
 A modern, full-stack QR code generator with advanced styling capabilities and logo integration.
 
-## Features
+## ✨ Features
 
-- 🎨 **Advanced Styling**: 6 module styles (square, rounded, dots, gapped, bars) with custom colors
-- 🖼️ **Logo Integration**: Upload logos with smart positioning and background customization
-- ⚙️ **Flexible Configuration**: Error correction levels, eye shapes/styles, corner rounding
-- 🎯 **Quick Presets**: 6 built-in presets (Classic, Modern, Dots, Retro, Dark, Neon)
-- 🚀 **High Performance**: FastAPI backend with optimized image processing
-- 💻 **Modern UI**: React + TypeScript frontend with shadcn/ui components
-- 📱 **Responsive**: Works seamlessly on desktop, tablet, and mobile
+- 🎨 **Advanced Styling**: 6 module styles with custom colors and eye shapes
+- 🖼️ **Logo Integration**: Upload and position logos with smart background handling
+- 🎯 **Quick Presets**: 6 built-in styles (Classic, Modern, Dots, Retro, Dark, Neon)
+- 📱 **Responsive Design**: Works seamlessly across all devices
+- 🚀 **High Performance**: Optimized image processing with abuse protection
 - 🔗 **API-First**: RESTful API for easy integration
 
 ## Quick Start
@@ -18,51 +16,37 @@ A modern, full-stack QR code generator with advanced styling capabilities and lo
 ### Development
 
 ```bash
-# Clone the repository
+# Clone and start with Docker (recommended)
 git clone <repository-url>
 cd qr-studio
-
-# Start with Docker Compose (recommended)
 docker-compose up -d
 
 # Access the application
 # Frontend: http://localhost:5173
-# Backend API: http://localhost:8000
-# API Docs: http://localhost:8000/docs
+# Backend API: http://localhost:8000/docs
 ```
 
 **Manual Setup:**
-
 ```bash
 # Backend
-cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+cd backend && pip install -r requirements.txt
+uvicorn app.main:app --reload
 
 # Frontend (new terminal)
-cd frontend
-npm install
-npm run dev
+cd frontend && npm install && npm run dev
 ```
 
-### Production
+### 🚀 Production Deployment
 
-**Free Deployment (Recommended):**
-
-```bash
-# Check deployment readiness
-./deploy-setup.sh
-
-# Deploy to free services (see DEPLOYMENT.md)
-# - Frontend: GitHub Pages
-# - Backend: Railway.app or Render.com
-```
-
-**Docker Deployment:**
+Deploy for **FREE** using GitHub and Render.com:
 
 ```bash
-# Local production testing
-docker-compose -f docker-compose.prod.yml up -d
+# 1. Fork this repository
+# 2. Enable GitHub Pages (Settings → Pages → GitHub Actions)
+# 3. Deploy backend to Render.com using render.yaml
+# 4. Add environment variables in Render dashboard
+
+# See DEPLOYMENT.md for detailed instructions
 ```
 
 ## API Usage
@@ -91,30 +75,18 @@ curl "http://localhost:8000/api/v1/qr/presets"
 curl "http://localhost:8000/api/v1/qr/validate-url?url=https://example.com"
 ```
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Backend**: FastAPI, Python, Pillow, qrcode, Pydantic, Redis
+- **Backend**: FastAPI, Python, Pillow, qrcode, Redis
 - **Frontend**: React, TypeScript, Vite, shadcn/ui, Tailwind CSS
-- **Development**: Docker Compose, Vitest, pytest
-- **Deployment**: GitHub Actions, Railway.app/Render.com, GitHub Pages
-- **Type Safety**: TypeScript (frontend), mypy (backend)
+- **Deployment**: GitHub Actions, Render.com, GitHub Pages
+- **Testing**: Vitest, pytest, mypy
 
-## 🚀 Deployment
+## 📖 Documentation
 
-Deploy QR Studio for **FREE** using GitHub and cloud services:
-
-- **📖 [Deployment Guide](DEPLOYMENT.md)** - Complete step-by-step instructions
-- **🛠️ Quick Setup**: Run `./deploy-setup.sh` to check readiness
-
-**Free Services Used:**
-
-- Frontend: GitHub Pages (Free forever)
-- Backend: Render.com (Free forever)
-- Database: PostgreSQL on Render (Free forever)
-- Cache: Redis on Render (Free forever)
-- CI/CD: GitHub Actions (Free forever)
-
-**Total Monthly Cost: $0** 💰
+- **[Deployment Guide](DEPLOYMENT.md)** - Free deployment instructions
+- **API Docs**: Available at `/docs` endpoint
+- **Live Demo**: [QR Studio](https://adam-olser.github.io/qr-studio/)
 
 ## License
 
