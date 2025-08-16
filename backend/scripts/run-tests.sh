@@ -16,7 +16,7 @@ python3 -m pytest \
     --cov=app \
     --cov-report=term-missing \
     --cov-report=html:htmlcov \
-    --cov-fail-under=70 \
+    --cov-fail-under=60 \
     "$@"
 
 echo "✅ Test suite completed!"

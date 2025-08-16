@@ -6,6 +6,7 @@ This middleware integrates comprehensive abuse protection into the FastAPI appli
 
 import time
 import logging
+import os
 from typing import Any
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -33,7 +34,15 @@ class AbuseProtectionMiddleware(BaseHTTPMiddleware):
 
         try:
             # Skip abuse protection in testing environment
-            if settings.ENABLE_ABUSE_PROTECTION and settings.ENV != "test":
+            # Check both settings and environment variables for test mode
+            is_test_env = (
+                settings.ENV == "test" or 
+                os.getenv("ENV") == "test" or 
+                os.getenv("PYTEST_CURRENT_TEST") is not None or
+                not settings.ENABLE_ABUSE_PROTECTION
+            )
+            
+            if settings.ENABLE_ABUSE_PROTECTION and not is_test_env:
                 # Apply abuse protection checks
                 is_allowed, error_response = await check_abuse_protection(request)
                 if not is_allowed and error_response:
