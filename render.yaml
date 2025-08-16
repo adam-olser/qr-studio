@@ -21,7 +21,7 @@ services:
           name: qr-studio-redis
           property: connectionString
       - key: CORS_ORIGINS
-        value: https://yourusername.github.io
+        value: "https://yourusername.github.io"
       - key: MAX_FILE_SIZE
         value: "5242880"
       - key: RATE_LIMIT_REQUESTS

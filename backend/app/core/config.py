@@ -1,5 +1,6 @@
 import os
-from typing import List
+from typing import List, Union
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -9,12 +10,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
 
     # CORS
-    CORS_ORIGINS: List[str] = [
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://localhost:8080",
-    ]
+    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:5173,http://localhost:5174,http://localhost:8080"
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379"
@@ -69,9 +65,20 @@ class Settings(BaseSettings):
     AWS_BUCKET: str = ""
     AWS_REGION: str = "us-east-1"
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    @property
+    def cors_origins_list(self) -> List[str]:
+        """Get CORS origins as a list"""
+        if isinstance(self.CORS_ORIGINS, str):
+            return [origin.strip() for origin in self.CORS_ORIGINS.split(',')]
+        return self.CORS_ORIGINS
+
+    model_config = {
+        "env_file": ".env",
+        "case_sensitive": True,
+        "json_schema_extra": {
+            "env_parse_none_str": "null"
+        }
+    }
 
 
 settings = Settings()
