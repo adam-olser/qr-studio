@@ -47,8 +47,21 @@ npm run dev
 
 ### Production
 
+**Free Deployment (Recommended):**
+
 ```bash
-# Production deployment (coming soon)
+# Check deployment readiness
+./deploy-setup.sh
+
+# Deploy to free services (see DEPLOYMENT.md)
+# - Frontend: GitHub Pages
+# - Backend: Railway.app or Render.com
+```
+
+**Docker Deployment:**
+
+```bash
+# Local production testing
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
@@ -80,10 +93,28 @@ curl "http://localhost:8000/api/v1/qr/validate-url?url=https://example.com"
 
 ## Tech Stack
 
-- **Backend**: FastAPI, Python, Pillow, qrcode, Pydantic
+- **Backend**: FastAPI, Python, Pillow, qrcode, Pydantic, Redis
 - **Frontend**: React, TypeScript, Vite, shadcn/ui, Tailwind CSS
-- **Development**: Docker Compose, Redis
-- **Type Safety**: TypeScript (frontend), mypy (backend - planned)
+- **Development**: Docker Compose, Vitest, pytest
+- **Deployment**: GitHub Actions, Railway.app/Render.com, GitHub Pages
+- **Type Safety**: TypeScript (frontend), mypy (backend)
+
+## 🚀 Deployment
+
+Deploy QR Studio for **FREE** using GitHub and cloud services:
+
+- **📖 [Deployment Guide](DEPLOYMENT.md)** - Complete step-by-step instructions
+- **🛠️ Quick Setup**: Run `./deploy-setup.sh` to check readiness
+
+**Free Services Used:**
+
+- Frontend: GitHub Pages (Free)
+- Backend: Railway.app or Render.com (Free tier)
+- Database: PostgreSQL (Free tier)
+- Cache: Redis (Free tier)
+- CI/CD: GitHub Actions (Free)
+
+**Total Monthly Cost: $0** 💰
 
 ## License
 

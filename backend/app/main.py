@@ -2,11 +2,12 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from .api import qr, health
+from .api import qr, health, admin
 from .core.config import settings
 from .core.error_handlers import setup_error_handlers
 from .core.security import SecurityMiddleware, RateLimiter
 from .core.cache import init_cache, close_cache
+from .middleware.abuse_middleware import AbuseProtectionMiddleware
 
 # Configure logging
 logging.basicConfig(
@@ -30,6 +31,9 @@ app.state.settings = settings
 # Setup error handlers
 setup_error_handlers(app)
 
+# Abuse protection middleware (should be first)
+app.add_middleware(AbuseProtectionMiddleware)
+
 # Security middleware (should be added before CORS)
 app.add_middleware(SecurityMiddleware)
 
@@ -46,6 +50,10 @@ app.add_middleware(
 # API routes
 app.include_router(health.router, prefix="/health", tags=["Health"])
 app.include_router(qr.router, prefix="/api/v1/qr", tags=["QR Generation"])
+
+# Admin routes (only in development or with proper authentication)
+if settings.ENV != "production" or hasattr(settings, "ADMIN_TOKEN"):
+    app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 
 # Static files (for generated QR codes if needed)
 # app.mount("/static", StaticFiles(directory="static"), name="static")

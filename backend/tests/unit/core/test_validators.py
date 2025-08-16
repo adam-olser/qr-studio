@@ -136,7 +136,7 @@ class TestValidateFileUpload:
         """Test empty file validation."""
         with pytest.raises(FileProcessingError) as exc_info:
             validate_file_upload(b"", "test.png", "image/png")
-        assert "too large" in str(exc_info.value).lower()
+        assert "invalid image file" in str(exc_info.value).lower()
 
 
 class TestValidateQrSize:

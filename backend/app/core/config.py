@@ -43,6 +43,28 @@ class Settings(BaseSettings):
     QR_GENERATION_LIMIT: int = 20  # QR generations per minute
     URL_VALIDATION_LIMIT: int = 50  # URL validations per minute
 
+    # Abuse protection settings
+    ENABLE_ABUSE_PROTECTION: bool = True
+    MAX_CONCURRENT_REQUESTS: int = 5  # per IP
+    DAILY_QR_LIMIT: int = 1000  # QR codes per day per IP
+    HOURLY_QR_LIMIT: int = 100  # QR codes per hour per IP
+    DAILY_API_LIMIT: int = 10000  # API calls per day per IP
+    HOURLY_API_LIMIT: int = 1000  # API calls per hour per IP
+
+    # Threat escalation thresholds
+    BURST_REQUEST_THRESHOLD: int = 20  # requests in 10 seconds
+    ERROR_RATE_THRESHOLD: float = 0.5  # 50% error rate
+    LARGE_FILE_THRESHOLD: int = 10  # large files per minute
+
+    # Block durations (in seconds)
+    FIRST_BLOCK_DURATION: int = 300  # 5 minutes
+    SECOND_BLOCK_DURATION: int = 900  # 15 minutes
+    THIRD_BLOCK_DURATION: int = 3600  # 1 hour
+    MAX_BLOCK_DURATION: int = 86400  # 24 hours
+
+    # Admin access
+    ADMIN_TOKEN: str = "change-this-admin-token-in-production"
+
     # Storage (for future use)
     AWS_BUCKET: str = ""
     AWS_REGION: str = "us-east-1"

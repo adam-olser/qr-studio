@@ -13,7 +13,7 @@ class TestHealthEndpoints:
 
     def test_health_check(self, test_client: TestClient):
         """Test basic health check endpoint."""
-        response = test_client.get("/api/v1/health")
+        response = test_client.get("/health/")
 
         assert response.status_code == 200
         health_data = response.json()
@@ -34,7 +34,7 @@ class TestHealthEndpoints:
         """Test readiness check when all dependencies are ready."""
         mock_check_deps.return_value = (True, {})
 
-        response = await async_client.get("/api/v1/health/ready")
+        response = await async_client.get("/health/ready")
 
         assert response.status_code == 200
         readiness_data = response.json()
@@ -50,7 +50,7 @@ class TestHealthEndpoints:
         """Test readiness check when dependencies are not ready."""
         mock_check_deps.return_value = (False, {"redis": "Connection failed"})
 
-        response = await async_client.get("/api/v1/health/ready")
+        response = await async_client.get("/health/ready")
 
         assert response.status_code == 503
         readiness_data = response.json()
@@ -61,7 +61,7 @@ class TestHealthEndpoints:
 
     def test_liveness_check(self, test_client: TestClient):
         """Test liveness check endpoint."""
-        response = test_client.get("/api/v1/health/live")
+        response = test_client.get("/health/live")
 
         assert response.status_code == 200
         liveness_data = response.json()
@@ -81,7 +81,7 @@ class TestHealthEndpoints:
         }
         mock_get_stats.return_value = mock_stats
 
-        response = await async_client.get("/api/v1/health/cache")
+        response = await async_client.get("/health/cache")
 
         assert response.status_code == 200
         cache_data = response.json()
@@ -95,7 +95,7 @@ class TestHealthEndpoints:
         """Test cache stats endpoint when cache has error."""
         mock_get_stats.side_effect = Exception("Redis connection failed")
 
-        response = await async_client.get("/api/v1/health/cache")
+        response = await async_client.get("/health/cache")
 
         assert response.status_code == 200  # Still returns 200 but with error info
         cache_data = response.json()
@@ -244,10 +244,10 @@ class TestHealthEndpointsIntegration:
     def test_health_endpoints_accessible(self, test_client: TestClient):
         """Test that all health endpoints are accessible."""
         endpoints = [
-            "/api/v1/health",
-            "/api/v1/health/ready",
-            "/api/v1/health/live",
-            "/api/v1/health/cache",
+            "/health/",
+            "/health/ready",
+            "/health/live",
+            "/health/cache",
         ]
 
         for endpoint in endpoints:
@@ -259,7 +259,7 @@ class TestHealthEndpointsIntegration:
 
     def test_health_response_structure(self, test_client: TestClient):
         """Test that health responses have consistent structure."""
-        response = test_client.get("/api/v1/health")
+        response = test_client.get("/health/")
 
         assert response.status_code == 200
         data = response.json()
@@ -272,16 +272,22 @@ class TestHealthEndpointsIntegration:
 
     def test_readiness_response_structure(self, test_client: TestClient):
         """Test that readiness responses have consistent structure."""
-        response = test_client.get("/api/v1/health/ready")
+        response = test_client.get("/health/ready")
 
         # Should be either 200 (ready) or 503 (not ready)
         assert response.status_code in [200, 503]
         data = response.json()
 
-        # Required fields
-        required_fields = ["status", "timestamp", "checks"]
-        for field in required_fields:
-            assert field in data
-
-        # Status should be either "ready" or "not ready"
-        assert data["status"] in ["ready", "not ready"]
+        if response.status_code == 200:
+            # Success response structure
+            required_fields = ["status", "timestamp", "checks"]
+            for field in required_fields:
+                assert field in data
+            assert data["status"] == "ready"
+        else:
+            # Error response structure (503)
+            required_fields = ["message", "error_code", "details"]
+            for field in required_fields:
+                assert field in data
+            assert data["error_code"] == "SERVICE_UNAVAILABLE"
+            assert "checks" in data["details"]

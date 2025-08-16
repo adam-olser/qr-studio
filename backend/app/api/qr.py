@@ -15,6 +15,7 @@ from ..core.exceptions import (
     BadRequestException,
     ValidationException,
     FileUploadException,
+    FileProcessingError,
     QRGenerationException,
 )
 from ..core.validators import (
@@ -239,6 +240,9 @@ async def generate_qr(
     except (BadRequestException, FileUploadException, QRGenerationException):
         # Re-raise custom exceptions
         raise
+    except FileProcessingError as e:
+        # Convert FileProcessingError to FileUploadException (400 status)
+        raise FileUploadException(str(e), details=e.details)
     except Exception as e:
         logger.error(f"Unexpected error in QR generation: {str(e)}", exc_info=True)
         raise QRGenerationException(f"Failed to generate QR code: {str(e)}")

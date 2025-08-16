@@ -1,0 +1,27 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "backend/Dockerfile.prod"
+  },
+  "deploy": {
+    "startCommand": "gunicorn app.main:app -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:$PORT",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  },
+  "variables": {
+    "ENABLE_ABUSE_PROTECTION": "true",
+    "DAILY_QR_LIMIT": "500",
+    "HOURLY_QR_LIMIT": "50",
+    "DAILY_API_LIMIT": "5000",
+    "HOURLY_API_LIMIT": "500",
+    "MAX_CONCURRENT_REQUESTS": "3",
+    "BURST_REQUEST_THRESHOLD": "15",
+    "ERROR_RATE_THRESHOLD": "0.6",
+    "FIRST_BLOCK_DURATION": "300",
+    "SECOND_BLOCK_DURATION": "900",
+    "THIRD_BLOCK_DURATION": "3600"
+  }
+}

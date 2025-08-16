@@ -392,7 +392,7 @@ class QRCache:
         Returns:
             SHA256 hash of logo data
         """
-        return hashlib.sha256(logo_data).hexdigest()[:16]
+        return hashlib.sha256(logo_data).hexdigest()
 
 
 # Global cache instances

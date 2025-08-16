@@ -15,6 +15,23 @@ export default defineConfig({
     host: true,
     port: 5173,
   },
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+          ui: [
+            "@radix-ui/react-select",
+            "@radix-ui/react-slider",
+            "@radix-ui/react-tooltip",
+          ],
+        },
+      },
+    },
+  },
+  base: process.env.NODE_ENV === "production" ? "/qr-studio/" : "/",
   test: {
     globals: true,
     environment: "jsdom",
