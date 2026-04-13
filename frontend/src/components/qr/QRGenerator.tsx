@@ -21,12 +21,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import {
   Download,
   RotateCcw,
-  Wand2,
+
   Image as ImageIcon,
   QrCode,
   Palette,
   AlertCircle,
   CheckCircle,
+  Loader2 as Spinner,
+  Wand2 as Wand,
 } from "lucide-react";
 import { useQRGeneration } from "../../hooks/useQRGeneration";
 
@@ -59,6 +61,42 @@ export function QRGenerator() {
   } = useQRGeneration();
 
   const [activeTab, setActiveTab] = useState("logo");
+
+  // Backend wake-up detection (Render free tier cold starts)
+  const [backendWaking, setBackendWaking] = useState(false);
+  useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+    let cancelled = false;
+    let pollTimer: ReturnType<typeof setTimeout>;
+
+    const checkHealth = async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      try {
+        const res = await fetch(`${apiUrl}/health/`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!cancelled && res.ok) {
+          setBackendWaking(false);
+          return;
+        }
+      } catch {
+        clearTimeout(timeoutId);
+        if (!cancelled) {
+          setBackendWaking(true);
+          pollTimer = setTimeout(checkHealth, 4000);
+        }
+        return;
+      }
+      // Non-ok response (4xx/5xx) — service is up, not a cold start
+      if (!cancelled) setBackendWaking(false);
+    };
+
+    checkHealth();
+    return () => {
+      cancelled = true;
+      clearTimeout(pollTimer);
+    };
+  }, []);
 
   // Ref to track the last generated config to prevent infinite loops
   const lastGeneratedConfigRef = useRef<string>("");
@@ -196,6 +234,19 @@ export function QRGenerator() {
           </p>
         </div>
 
+        {/* Backend wake-up banner */}
+        {backendWaking && (
+          <div className="flex items-start gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
+            <Spinner className="h-4 w-4 mt-0.5 shrink-0 animate-spin text-amber-500" />
+            <div>
+              <span className="font-medium">Service is waking up</span>
+              <span className="text-amber-700">
+                {" — "}the backend is hosted on Render's free tier and may take up to 60 seconds to start after being idle. Hang tight, your request will go through automatically once it's ready.
+              </span>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Panel - Configuration */}
           <div className="space-y-6 lg:pr-4">
@@ -232,7 +283,7 @@ export function QRGenerator() {
                 <CardHeader className="pb-4">
                   <CardTitle className="text-xl flex items-center gap-3">
                     <div className="p-2 bg-purple-100 rounded-lg">
-                      <Wand2 className="h-5 w-5 text-purple-600" />
+                      <Wand className="h-5 w-5 text-purple-600" />
                     </div>
                     Quick Presets
                     <span className="ml-auto text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">

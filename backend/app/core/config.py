@@ -32,12 +32,12 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "your-secret-key-change-in-production"
 
     # Rate limiting
-    RATE_LIMIT_REQUESTS: int = 100  # requests per minute
+    RATE_LIMIT_REQUESTS: int = 200  # requests per minute
     RATE_LIMIT_WINDOW: int = 60  # seconds
 
     # QR generation rate limits
-    QR_GENERATION_LIMIT: int = 20  # QR generations per minute
-    URL_VALIDATION_LIMIT: int = 50  # URL validations per minute
+    QR_GENERATION_LIMIT: int = 40  # QR generations per minute
+    URL_VALIDATION_LIMIT: int = 100  # URL validations per minute
 
     # Abuse protection settings
     ENABLE_ABUSE_PROTECTION: bool = True

@@ -78,19 +78,24 @@ class SecurityMiddleware(BaseHTTPMiddleware):
     def __init__(self, app: Any, rate_limiter: Optional[RateLimiter] = None):
         super().__init__(app)
         self.rate_limiter = rate_limiter or RateLimiter(
-            max_requests=100,  # 100 requests per minute by default
-            window_seconds=60,
+            max_requests=settings.RATE_LIMIT_REQUESTS,
+            window_seconds=settings.RATE_LIMIT_WINDOW,
         )
 
         # Rate limiting for specific endpoints
         self.endpoint_limits = {
             "/api/v1/qr/generate": RateLimiter(
-                max_requests=20, window_seconds=60
-            ),  # 20 QR generations per minute
-            "/api/v1/qr/generate-form": RateLimiter(max_requests=20, window_seconds=60),
+                max_requests=settings.QR_GENERATION_LIMIT,
+                window_seconds=settings.RATE_LIMIT_WINDOW,
+            ),
+            "/api/v1/qr/generate-form": RateLimiter(
+                max_requests=settings.QR_GENERATION_LIMIT,
+                window_seconds=settings.RATE_LIMIT_WINDOW,
+            ),
             "/api/v1/qr/validate-url": RateLimiter(
-                max_requests=50, window_seconds=60
-            ),  # 50 validations per minute
+                max_requests=settings.URL_VALIDATION_LIMIT,
+                window_seconds=settings.RATE_LIMIT_WINDOW,
+            ),
         }
 
     async def dispatch(self, request: Request, call_next: Any) -> Response:

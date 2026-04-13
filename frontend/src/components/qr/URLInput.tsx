@@ -179,9 +179,9 @@ export function URLInput({
             </span>
           </div>
           <div className="grid grid-cols-1 gap-1">
-            {URL_EXAMPLES.map((example, index) => (
+            {URL_EXAMPLES.map((example) => (
               <button
-                key={index}
+                key={example}
                 type="button"
                 onClick={() => handleExampleClick(example)}
                 className="text-left text-sm text-blue-600 hover:text-blue-800 hover:underline p-1 rounded transition-colors"

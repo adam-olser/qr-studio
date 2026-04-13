@@ -4,10 +4,11 @@ QR Code Generation API Endpoints
 
 import io
 import logging
+from dataclasses import asdict
 from typing import Optional, Dict, Any
 from fastapi import APIRouter, UploadFile, File, Form
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 from ..services.qr_generator import QRConfig, qr_service
 from ..core.config import settings
@@ -64,18 +65,17 @@ class QRGenerationRequest(BaseModel):
     compress_level: int = Field(9, description="PNG compression level", ge=0, le=9)
     quantize_colors: int = Field(64, description="Color quantization", ge=2, le=256)
 
-    @validator("url")
+    @field_validator("url")
+    @classmethod
     def validate_url_field(cls, v: str) -> str:
-        # Sanitize input first
         sanitized_url = sanitize_input(v, max_length=2000, allow_html=False)
-
-        # Then validate
         is_valid, error, warning = validate_url(sanitized_url)
         if not is_valid:
             raise ValueError(error)
         return sanitized_url
 
-    @validator("style")
+    @field_validator("style")
+    @classmethod
     def validate_style_field(cls, v: str) -> str:
         valid_styles = [
             "square",
@@ -87,23 +87,28 @@ class QRGenerationRequest(BaseModel):
         ]
         return validate_enum_choice(v, "style", valid_styles)
 
-    @validator("ec_level")
+    @field_validator("ec_level")
+    @classmethod
     def validate_ec_level_field(cls, v: str) -> str:
         return validate_enum_choice(v, "ec_level", ["L", "M", "Q", "H"])
 
-    @validator("eye_shape")
+    @field_validator("eye_shape")
+    @classmethod
     def validate_eye_shape_field(cls, v: str) -> str:
         return validate_enum_choice(v, "eye_shape", ["rect", "rounded", "circle"])
 
-    @validator("eye_style")
+    @field_validator("eye_style")
+    @classmethod
     def validate_eye_style_field(cls, v: str) -> str:
         return validate_enum_choice(v, "eye_style", ["standard", "circle-ring"])
 
-    @validator("dark_color")
+    @field_validator("dark_color")
+    @classmethod
     def validate_dark_color(cls, v: str) -> str:
         return validate_color(v, "dark_color")
 
-    @validator("light_color")
+    @field_validator("light_color")
+    @classmethod
     def validate_light_color(cls, v: str) -> str:
         return validate_color(v, "light_color")
 
@@ -188,26 +193,7 @@ async def generate_qr(
         if logo_data:
             logo_hash = qr_cache.generate_logo_hash(logo_data)
 
-        config_dict = {
-            "url": config.url,
-            "size": config.size,
-            "border": config.border,
-            "style": config.style,
-            "dark_color": config.dark_color,
-            "light_color": config.light_color,
-            "ec_level": config.ec_level,
-            "eye_radius": config.eye_radius,
-            "eye_scale_x": config.eye_scale_x,
-            "eye_scale_y": config.eye_scale_y,
-            "eye_shape": config.eye_shape,
-            "eye_style": config.eye_style,
-            "logo_scale": config.logo_scale,
-            "bg_padding": config.bg_padding,
-            "bg_radius": config.bg_radius,
-            "qr_radius": config.qr_radius,
-            "compress_level": config.compress_level,
-            "quantize_colors": config.quantize_colors,
-        }
+        config_dict = asdict(config)
         cached_qr = await qr_cache.get_qr_code(config_dict, logo_hash)
 
         if cached_qr:

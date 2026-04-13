@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -17,12 +18,25 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Starting QR Studio API...")
+    await init_cache()
+    logger.info("QR Studio API started successfully")
+    yield
+    logger.info("Shutting down QR Studio API...")
+    await close_cache()
+    logger.info("QR Studio API shutdown complete")
+
+
 app = FastAPI(
     title="QR Studio API",
     description="High-performance QR code generation service with advanced styling",
     version="1.0.0",
     docs_url="/api/docs" if settings.ENV != "production" else None,
     redoc_url="/api/redoc" if settings.ENV != "production" else None,
+    lifespan=lifespan,
 )
 
 # Store settings in app state for access in error handlers
@@ -58,21 +72,6 @@ if settings.ENV != "production" or hasattr(settings, "ADMIN_TOKEN"):
 # Static files (for generated QR codes if needed)
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 
-
-@app.on_event("startup")
-async def startup_event() -> None:
-    """Initialize services on startup"""
-    logger.info("Starting QR Studio API...")
-    await init_cache()
-    logger.info("QR Studio API started successfully")
-
-
-@app.on_event("shutdown")
-async def shutdown_event() -> None:
-    """Cleanup on shutdown"""
-    logger.info("Shutting down QR Studio API...")
-    await close_cache()
-    logger.info("QR Studio API shutdown complete")
 
 
 @app.get("/")

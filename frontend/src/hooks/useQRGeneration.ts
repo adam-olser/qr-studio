@@ -224,27 +224,7 @@ export function useQRGeneration(
       setIsGenerating(false);
       isGeneratingRef.current = false;
     }
-  }, [
-    config.url,
-    config.size,
-    config.border,
-    config.style,
-    config.dark_color,
-    config.light_color,
-    config.ec_level,
-    config.eye_radius,
-    config.eye_scale_x,
-    config.eye_scale_y,
-    config.eye_shape,
-    config.eye_style,
-    config.logo_scale,
-    config.bg_padding,
-    config.bg_radius,
-    config.qr_radius,
-    config.compress_level,
-    config.quantize_colors,
-    logoFile,
-  ]);
+  }, [config, logoFile]);
 
   const regenerateQR = useCallback(async () => {
     await generateQR();
@@ -275,31 +255,25 @@ export function useQRGeneration(
         isGeneratingRef.current = false;
       }
     },
-    [config.url, config.size, logoFile]
+    [config, logoFile]
   );
 
   const validateURL = useCallback(
     async (url?: string) => {
       const urlToValidate = url ?? config.url;
-      console.log("🔍 validateURL called with:", urlToValidate);
 
       if (!urlToValidate.trim()) {
-        console.log("❌ URL empty, clearing validation");
         setUrlValidation(null);
         return;
       }
 
-      console.log("⏳ Starting URL validation...");
       setIsValidatingUrl(true);
 
       try {
-        console.log("📡 Calling validateURL API...");
         const validation = await qrClient.validateURL(urlToValidate);
-        console.log("✅ URL validation result:", validation);
         setUrlValidation(validation);
       } catch (err) {
-        console.error("❌ URL validation error:", err);
-        // Provide basic validation if API fails
+        console.error("URL validation error:", err);
         const fallbackValidation = {
           valid: urlToValidate.length > 0 && urlToValidate.length <= 2000,
           error:
@@ -310,7 +284,6 @@ export function useQRGeneration(
               : undefined,
           url: urlToValidate,
         };
-        console.log("🔄 Using fallback validation:", fallbackValidation);
         setUrlValidation(fallbackValidation);
       } finally {
         setIsValidatingUrl(false);
