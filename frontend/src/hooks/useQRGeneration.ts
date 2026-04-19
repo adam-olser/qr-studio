@@ -157,7 +157,7 @@ export function useQRGeneration(
       setAvailablePresets(presets);
     } catch (err) {
       console.error("Failed to load presets:", err);
-      setError("Failed to load QR styling presets");
+      // Don't set shared error — a preset load failure shouldn't block URL validation or generation
     } finally {
       setPresetsLoading(false);
     }

@@ -183,7 +183,10 @@ export function URLInput({
               <button
                 key={example}
                 type="button"
-                onClick={() => handleExampleClick(example)}
+                onMouseDown={(e) => {
+                  e.preventDefault(); // prevent input blur before click registers
+                  handleExampleClick(example);
+                }}
                 className="text-left text-sm text-blue-600 hover:text-blue-800 hover:underline p-1 rounded transition-colors"
               >
                 {example}

@@ -72,6 +72,10 @@ class QRApiClient {
             );
           }
           throw new Error("Validation failed. Please check your inputs.");
+        } else if (error.response?.status === 429) {
+          throw new Error(
+            "Too many requests — please slow down a moment and try again."
+          );
         } else if (error.response?.status >= 500) {
           throw new Error("Server error. Please try again later.");
         } else if (error.code === "ECONNABORTED") {

@@ -21,7 +21,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import {
   Download,
   RotateCcw,
-
   Image as ImageIcon,
   QrCode,
   Palette,
@@ -29,6 +28,7 @@ import {
   CheckCircle,
   Loader2 as Spinner,
   Wand2 as Wand,
+  X,
 } from "lucide-react";
 import { useQRGeneration } from "../../hooks/useQRGeneration";
 
@@ -61,9 +61,10 @@ export function QRGenerator() {
   } = useQRGeneration();
 
   const [activeTab, setActiveTab] = useState("logo");
+  const [imgError, setImgError] = useState(false);
 
   // Backend wake-up detection (Render free tier cold starts)
-  const [backendWaking, setBackendWaking] = useState(false);
+  const [backendWaking, setBackendWaking] = useState(true);
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
     let cancelled = false;
@@ -101,10 +102,12 @@ export function QRGenerator() {
   // Ref to track the last generated config to prevent infinite loops
   const lastGeneratedConfigRef = useRef<string>("");
 
-  // Load presets on mount
+  // Load presets only after backend is confirmed up
   useEffect(() => {
-    loadPresets();
-  }, [loadPresets]);
+    if (!backendWaking) {
+      loadPresets();
+    }
+  }, [backendWaking, loadPresets]);
 
   // Auto-validate URL when it changes (with debouncing)
   useEffect(() => {
@@ -202,6 +205,18 @@ export function QRGenerator() {
     clearError();
   };
 
+  // Reset image error state when a new preview arrives
+  useEffect(() => {
+    setImgError(false);
+  }, [previewUrl]);
+
+  // Auto-dismiss error toast after 5 seconds
+  useEffect(() => {
+    if (!error) return;
+    const timer = setTimeout(clearError, 5000);
+    return () => clearTimeout(timer);
+  }, [error, clearError]);
+
   const canGenerate =
     config.url.trim() && urlValidation?.valid && !isGenerating;
 
@@ -217,6 +232,24 @@ export function QRGenerator() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* Error toast */}
+      {error && (
+        <div className="fixed top-4 right-4 z-50 max-w-sm w-full bg-red-50 border border-red-200 rounded-xl shadow-lg p-4 flex items-start gap-3 animate-in slide-in-from-top-2 duration-300">
+          <div className="p-1.5 bg-red-100 rounded-lg shrink-0">
+            <AlertCircle className="h-4 w-4 text-red-600" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-red-900">Generation Failed</p>
+            <p className="text-sm text-red-700 mt-0.5">{error}</p>
+          </div>
+          <button
+            onClick={clearError}
+            className="shrink-0 text-red-400 hover:text-red-600 transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
       <div className="w-full max-w-7xl mx-auto p-4 space-y-8">
         {/* Header */}
         <div className="text-center space-y-3 pt-6 pb-6">
@@ -418,32 +451,6 @@ export function QRGenerator() {
               </Button>
             </div>
 
-            {/* Error Display */}
-            {error && (
-              <Card className="border-0 shadow-lg bg-red-50/80 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 bg-red-100 rounded-lg">
-                      <AlertCircle className="h-5 w-5 text-red-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-red-900 mb-1">
-                        Generation Failed
-                      </h4>
-                      <p className="text-sm text-red-700 mb-3">{error}</p>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={clearError}
-                        className="text-red-700 border-red-300 hover:bg-red-100 hover:border-red-400 transition-all duration-200"
-                      >
-                        Dismiss
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
 
           {/* Right Panel - Preview */}
@@ -486,14 +493,35 @@ export function QRGenerator() {
                         This usually takes just a moment
                       </p>
                     </div>
+                  ) : error && !previewUrl ? (
+                    <div className="text-center">
+                      <div className="p-3 bg-red-100 rounded-full inline-flex mb-4">
+                        <AlertCircle className="h-10 w-10 text-red-500" />
+                      </div>
+                      <p className="text-base font-medium text-gray-700 mb-1">
+                        Generation Failed
+                      </p>
+                      <p className="text-sm text-gray-500">{error}</p>
+                    </div>
                   ) : previewUrl ? (
                     <div className="p-6 w-full">
                       <div className="relative group">
-                        <img
-                          src={previewUrl}
-                          alt="QR Code Preview"
-                          className="w-full h-full object-contain rounded-lg shadow-lg group-hover:scale-105 transition-transform duration-200"
-                        />
+                        {imgError ? (
+                          <div className="text-center py-8">
+                            <div className="p-3 bg-red-100 rounded-full inline-flex mb-4">
+                              <AlertCircle className="h-10 w-10 text-red-500" />
+                            </div>
+                            <p className="text-base font-medium text-gray-700 mb-1">Preview Unavailable</p>
+                            <p className="text-sm text-gray-500">The QR image could not be displayed</p>
+                          </div>
+                        ) : (
+                          <img
+                            src={previewUrl}
+                            alt="QR Code Preview"
+                            onError={() => setImgError(true)}
+                            className="w-full h-full object-contain rounded-lg shadow-lg group-hover:scale-105 transition-transform duration-200"
+                          />
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg" />
                       </div>
                     </div>

@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     RATE_LIMIT_WINDOW: int = 60  # seconds
 
     # QR generation rate limits
-    QR_GENERATION_LIMIT: int = 40  # QR generations per minute
+    QR_GENERATION_LIMIT: int = 120  # QR generations per minute
     URL_VALIDATION_LIMIT: int = 100  # URL validations per minute
 
     # Abuse protection settings
