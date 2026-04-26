@@ -27,6 +27,7 @@ docker-compose up -d
 ```
 
 **Manual Setup:**
+
 ```bash
 # Backend
 cd backend && pip install -r requirements.txt
@@ -40,14 +41,12 @@ cd frontend && npm install && npm run dev
 
 Deploy for **FREE** using GitHub and Render.com:
 
-```bash
-# 1. Fork this repository
-# 2. Enable GitHub Pages (Settings → Pages → GitHub Actions)
-# 3. Deploy backend to Render.com using render.yaml
-# 4. Add environment variables in Render dashboard
+1. Fork this repository
+2. Enable GitHub Pages: **Settings → Pages → GitHub Actions**
+3. Deploy backend to Render.com using `render.yaml`
+4. Set environment variables in the Render dashboard
 
-# See DEPLOYMENT.md for detailed instructions
-```
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for detailed instructions.
 
 ## API Usage
 
@@ -78,9 +77,9 @@ curl "http://localhost:8000/api/v1/qr/validate-url?url=https://example.com"
 ## 🛠️ Tech Stack
 
 - **Backend**: FastAPI, Python, Pillow, qrcode, Redis
-- **Frontend**: React, TypeScript, Vite, shadcn/ui, Tailwind CSS
+- **Frontend**: React 18, TypeScript, Vite, shadcn/ui, Tailwind CSS
 - **Deployment**: GitHub Actions, Render.com, GitHub Pages
-- **Testing**: Vitest, pytest, mypy
+- **Testing**: Vitest, pytest, mypy, pytest-asyncio
 
 ## 📖 Documentation
 

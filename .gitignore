@@ -99,3 +99,4 @@ venv.bak/
 # Temporary files
 tmp/
 temp/
+.claude/
