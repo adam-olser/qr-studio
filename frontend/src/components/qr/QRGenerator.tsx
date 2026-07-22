@@ -67,10 +67,16 @@ export function QRGenerator() {
   const [backendWaking, setBackendWaking] = useState(true);
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+    // Some ad blockers (e.g. uBlock) block requests to "/health" paths,
+    // treating them as monitoring beacons. Cap retries so a blocked health
+    // check can't leave the app stuck on the wake-up banner forever.
+    const MAX_ATTEMPTS = 8;
     let cancelled = false;
     let pollTimer: ReturnType<typeof setTimeout>;
+    let attempts = 0;
 
     const checkHealth = async () => {
+      attempts += 1;
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
       try {
@@ -83,6 +89,13 @@ export function QRGenerator() {
       } catch {
         clearTimeout(timeoutId);
         if (!cancelled) {
+          if (attempts >= MAX_ATTEMPTS) {
+            // Give up waiting — the check itself may be blocked (ad blocker,
+            // network policy) rather than the backend being down. Proceed
+            // and let real API calls surface any actual connectivity error.
+            setBackendWaking(false);
+            return;
+          }
           setBackendWaking(true);
           pollTimer = setTimeout(checkHealth, 4000);
         }
