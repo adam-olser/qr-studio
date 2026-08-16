@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import { render } from "../../../test/utils";
 import { QRGenerator } from "../QRGenerator";
 
 // Mock the useQRGeneration hook

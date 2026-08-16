@@ -95,8 +95,15 @@ venv.bak/
 *.gif
 !docs/examples/*.png
 !public/*.png
+!frontend/e2e/**/*.png
 
 # Temporary files
 tmp/
 temp/
 .claude/
+
+# Playwright
+/frontend/test-results/
+/frontend/playwright-report/
+/frontend/blob-report/
+/frontend/playwright/.cache/

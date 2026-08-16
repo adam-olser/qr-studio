@@ -31,6 +31,7 @@ import {
   X,
 } from "lucide-react";
 import { useQRGeneration } from "../../hooks/useQRGeneration";
+import { ThemeToggle } from "../ThemeToggle";
 
 export function QRGenerator() {
   const {
@@ -244,20 +245,20 @@ export function QRGenerator() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-950 dark:via-background dark:to-slate-950">
       {/* Error toast */}
       {error && (
-        <div className="fixed top-4 right-4 z-50 max-w-sm w-full bg-red-50 border border-red-200 rounded-xl shadow-lg p-4 flex items-start gap-3 animate-in slide-in-from-top-2 duration-300">
-          <div className="p-1.5 bg-red-100 rounded-lg shrink-0">
-            <AlertCircle className="h-4 w-4 text-red-600" />
+        <div className="fixed top-4 right-4 z-50 max-w-sm w-full bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-xl shadow-lg p-4 flex items-start gap-3 animate-in slide-in-from-top-2 duration-300">
+          <div className="p-1.5 bg-red-100 dark:bg-red-900/50 rounded-lg shrink-0">
+            <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-red-900">Generation Failed</p>
-            <p className="text-sm text-red-700 mt-0.5">{error}</p>
+            <p className="text-sm font-semibold text-red-900 dark:text-red-200">Generation Failed</p>
+            <p className="text-sm text-red-700 dark:text-red-300 mt-0.5">{error}</p>
           </div>
           <button
             onClick={clearError}
-            className="shrink-0 text-red-400 hover:text-red-600 transition-colors"
+            className="shrink-0 text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
@@ -265,7 +266,10 @@ export function QRGenerator() {
       )}
       <div className="w-full max-w-7xl mx-auto p-4 space-y-8">
         {/* Header */}
-        <div className="text-center space-y-3 pt-6 pb-6">
+        <div className="relative text-center space-y-3 pt-6 pb-6">
+          <div className="absolute right-0 top-6">
+            <ThemeToggle />
+          </div>
           <div className="flex items-center justify-center gap-3 mb-2">
             <div className="relative">
               <QrCode className="h-8 w-8 text-blue-600" />
@@ -275,18 +279,18 @@ export function QRGenerator() {
               QR Studio
             </h1>
           </div>
-          <p className="text-base text-gray-600 max-w-xl mx-auto">
+          <p className="text-base text-muted-foreground max-w-xl mx-auto">
             Create QR codes with custom styling, logos, and advanced features.
           </p>
         </div>
 
         {/* Backend wake-up banner */}
         {backendWaking && (
-          <div className="flex items-start gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
+          <div className="flex items-start gap-3 px-4 py-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded-xl text-sm text-amber-800 dark:text-amber-300">
             <Spinner className="h-4 w-4 mt-0.5 shrink-0 animate-spin text-amber-500" />
             <div>
               <span className="font-medium">Service is waking up</span>
-              <span className="text-amber-700">
+              <span className="text-amber-700 dark:text-amber-400">
                 {" — "}the backend is hosted on Render's free tier and may take up to 60 seconds to start after being idle. Hang tight, your request will go through automatically once it's ready.
               </span>
             </div>
@@ -297,14 +301,14 @@ export function QRGenerator() {
           {/* Left Panel - Configuration */}
           <div className="space-y-6 lg:pr-4">
             {/* URL Input - First Step */}
-            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <Card className="border-0 shadow-lg bg-white/80 dark:bg-card/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
               <CardHeader className="pb-4">
                 <CardTitle className="text-xl flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <QrCode className="h-5 w-5 text-blue-600" />
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-lg">
+                    <QrCode className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   URL or Text
-                  <span className="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                  <span className="ml-auto text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full font-medium">
                     Step 1
                   </span>
                 </CardTitle>
@@ -325,14 +329,14 @@ export function QRGenerator() {
 
             {/* Quick Presets */}
             {Object.keys(availablePresets).length > 0 && (
-              <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+              <Card className="border-0 shadow-lg bg-white/80 dark:bg-card/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-xl flex items-center gap-3">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <Wand className="h-5 w-5 text-purple-600" />
+                    <div className="p-2 bg-purple-100 dark:bg-purple-900/40 rounded-lg">
+                      <Wand className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                     </div>
                     Quick Presets
-                    <span className="ml-auto text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
+                    <span className="ml-auto text-xs bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 px-2 py-1 rounded-full font-medium">
                       Step 2
                     </span>
                   </CardTitle>
@@ -352,7 +356,7 @@ export function QRGenerator() {
                         className={`relative overflow-hidden transition-all duration-200 ${
                           selectedPreset === key
                             ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105"
-                            : "hover:bg-blue-50 hover:border-blue-300 hover:scale-105"
+                            : "hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:border-blue-300 hover:scale-105"
                         }`}
                       >
                         {preset.name}
@@ -368,7 +372,7 @@ export function QRGenerator() {
 
             {/* Advanced Configuration Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2 bg-white/80 backdrop-blur-sm border-0 shadow-lg h-12">
+              <TabsList className="grid w-full grid-cols-2 bg-white/80 dark:bg-card/80 backdrop-blur-sm border-0 shadow-lg h-12">
                 <TabsTrigger
                   value="logo"
                   className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white transition-all duration-200"
@@ -387,11 +391,11 @@ export function QRGenerator() {
 
               {/* Logo Upload Tab */}
               <TabsContent value="logo" className="space-y-4 mt-6">
-                <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+                <Card className="border-0 shadow-lg bg-white/80 dark:bg-card/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl flex items-center gap-3">
-                      <div className="p-2 bg-green-100 rounded-lg">
-                        <ImageIcon className="h-5 w-5 text-green-600" />
+                      <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded-lg">
+                        <ImageIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
                       </div>
                       Logo Upload
                     </CardTitle>
@@ -458,7 +462,7 @@ export function QRGenerator() {
                 onClick={handleReset}
                 disabled={isGenerating}
                 size="lg"
-                className="h-12 px-4 border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+                className="h-12 px-4 border-input hover:bg-accent hover:border-gray-400 dark:hover:border-input transition-all duration-200"
               >
                 <RotateCcw className="h-5 w-5" />
               </Button>
@@ -468,12 +472,12 @@ export function QRGenerator() {
 
           {/* Right Panel - Preview */}
           <div className="space-y-6 lg:sticky lg:top-8 lg:self-start">
-            <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+            <Card className="border-0 shadow-xl bg-white/80 dark:bg-card/80 backdrop-blur-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-xl flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <QrCode className="h-5 w-5 text-blue-600" />
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-lg">
+                      <QrCode className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     </div>
                     <span>QR Code Preview</span>
                   </div>
@@ -483,7 +487,7 @@ export function QRGenerator() {
                       size="sm"
                       onClick={handleDownload}
                       disabled={isGenerating}
-                      className="bg-green-50 border-green-300 hover:bg-green-100 hover:border-green-400 text-green-700 shadow-sm transition-all duration-200"
+                      className="bg-green-50 dark:bg-green-950/30 border-green-300 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/40 hover:border-green-400 text-green-700 dark:text-green-400 shadow-sm transition-all duration-200"
                     >
                       <Download className="h-4 w-4 mr-2" />
                       Download
@@ -492,40 +496,40 @@ export function QRGenerator() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center relative overflow-hidden">
+                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-muted dark:to-muted/50 rounded-xl border-2 border-dashed border-gray-300 dark:border-muted-foreground/30 flex items-center justify-center relative overflow-hidden">
                   {isGenerating ? (
                     <div className="text-center">
                       <div className="relative">
-                        <div className="animate-spin h-12 w-12 border-3 border-blue-200 border-t-blue-600 rounded-full mx-auto mb-4" />
-                        <div className="absolute inset-0 animate-ping h-12 w-12 border border-blue-300 rounded-full mx-auto opacity-20" />
+                        <div className="animate-spin h-12 w-12 border-3 border-blue-200 dark:border-blue-900 border-t-blue-600 dark:border-t-blue-400 rounded-full mx-auto mb-4" />
+                        <div className="absolute inset-0 animate-ping h-12 w-12 border border-blue-300 dark:border-blue-700 rounded-full mx-auto opacity-20" />
                       </div>
-                      <p className="text-base font-medium text-gray-700 mb-1">
+                      <p className="text-base font-medium text-foreground mb-1">
                         Generating QR code...
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         This usually takes just a moment
                       </p>
                     </div>
                   ) : error && !previewUrl ? (
                     <div className="text-center">
-                      <div className="p-3 bg-red-100 rounded-full inline-flex mb-4">
-                        <AlertCircle className="h-10 w-10 text-red-500" />
+                      <div className="p-3 bg-red-100 dark:bg-red-950/40 rounded-full inline-flex mb-4">
+                        <AlertCircle className="h-10 w-10 text-red-500 dark:text-red-400" />
                       </div>
-                      <p className="text-base font-medium text-gray-700 mb-1">
+                      <p className="text-base font-medium text-foreground mb-1">
                         Generation Failed
                       </p>
-                      <p className="text-sm text-gray-500">{error}</p>
+                      <p className="text-sm text-muted-foreground">{error}</p>
                     </div>
                   ) : previewUrl ? (
                     <div className="p-6 w-full">
                       <div className="relative group">
                         {imgError ? (
                           <div className="text-center py-8">
-                            <div className="p-3 bg-red-100 rounded-full inline-flex mb-4">
-                              <AlertCircle className="h-10 w-10 text-red-500" />
+                            <div className="p-3 bg-red-100 dark:bg-red-950/40 rounded-full inline-flex mb-4">
+                              <AlertCircle className="h-10 w-10 text-red-500 dark:text-red-400" />
                             </div>
-                            <p className="text-base font-medium text-gray-700 mb-1">Preview Unavailable</p>
-                            <p className="text-sm text-gray-500">The QR image could not be displayed</p>
+                            <p className="text-base font-medium text-foreground mb-1">Preview Unavailable</p>
+                            <p className="text-sm text-muted-foreground">The QR image could not be displayed</p>
                           </div>
                         ) : (
                           <img
@@ -541,15 +545,15 @@ export function QRGenerator() {
                   ) : config.url.trim() ? (
                     <div className="text-center">
                       <div className="relative mb-4">
-                        <QrCode className="h-12 w-12 text-gray-400 mx-auto" />
+                        <QrCode className="h-12 w-12 text-muted-foreground mx-auto" />
                         <div className="absolute -top-1 -right-1 h-3 w-3 bg-blue-500 rounded-full animate-pulse" />
                       </div>
-                      <p className="text-base font-medium text-gray-700 mb-1">
+                      <p className="text-base font-medium text-foreground mb-1">
                         {urlValidation?.valid
                           ? "Ready to Generate!"
                           : "Enter a valid URL"}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         {urlValidation?.valid
                           ? "Click the generate button to create your QR code"
                           : "We'll validate your URL automatically"}
@@ -557,11 +561,11 @@ export function QRGenerator() {
                     </div>
                   ) : (
                     <div className="text-center">
-                      <QrCode className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-base font-medium text-gray-700 mb-1">
+                      <QrCode className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-base font-medium text-foreground mb-1">
                         Start by entering a URL
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         Your QR code preview will appear here
                       </p>
                     </div>
@@ -570,14 +574,14 @@ export function QRGenerator() {
 
                 {/* QR Info */}
                 {previewUrl && (
-                  <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-200">
-                    <div className="flex items-center gap-2 text-sm text-green-800 mb-2">
+                  <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 rounded-xl border border-green-200 dark:border-green-900">
+                    <div className="flex items-center gap-2 text-sm text-green-800 dark:text-green-300 mb-2">
                       <CheckCircle className="h-4 w-4" />
                       <span className="font-medium">
                         QR code generated successfully!
                       </span>
                     </div>
-                    <div className="text-xs text-green-700 space-y-1">
+                    <div className="text-xs text-green-700 dark:text-green-400 space-y-1">
                       <p>
                         Size: {config.size}×{config.size}px • Style:{" "}
                         {config.style} • Error Correction: {config.ec_level}
