@@ -87,7 +87,7 @@ export function StyleControls({
     <TooltipProvider>
       <div className="space-y-6">
         {/* Module Style */}
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-0 shadow-lg bg-white/80 dark:bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-purple-600" />
@@ -130,7 +130,7 @@ export function StyleControls({
         </Card>
 
         {/* Colors */}
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-0 shadow-lg bg-white/80 dark:bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Palette className="h-5 w-5 text-blue-600" />
@@ -153,7 +153,7 @@ export function StyleControls({
                     value={config.dark_color}
                     onChange={(e) => handleColorChange("dark", e.target.value)}
                     disabled={disabled}
-                    className="w-16 h-10 p-1 border-2 border-gray-200 rounded-lg cursor-pointer"
+                    className="w-16 h-10 p-1 border-2 border-input rounded-lg cursor-pointer"
                   />
                   <Input
                     type="text"
@@ -176,7 +176,7 @@ export function StyleControls({
                     value={config.light_color}
                     onChange={(e) => handleColorChange("light", e.target.value)}
                     disabled={disabled}
-                    className="w-16 h-10 p-1 border-2 border-gray-200 rounded-lg cursor-pointer"
+                    className="w-16 h-10 p-1 border-2 border-input rounded-lg cursor-pointer"
                   />
                   <Input
                     type="text"
@@ -193,7 +193,7 @@ export function StyleControls({
         </Card>
 
         {/* Eye Customization */}
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-0 shadow-lg bg-white/80 dark:bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Eye className="h-5 w-5 text-green-600" />
@@ -263,7 +263,7 @@ export function StyleControls({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="text-sm font-medium">Eye Radius</Label>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {config.eye_radius.toFixed(1)}
                   </span>
                 </div>
@@ -284,7 +284,7 @@ export function StyleControls({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-medium">Scale X</Label>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-muted-foreground">
                       {config.eye_scale_x.toFixed(1)}
                     </span>
                   </div>
@@ -303,7 +303,7 @@ export function StyleControls({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-medium">Scale Y</Label>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-muted-foreground">
                       {config.eye_scale_y.toFixed(1)}
                     </span>
                   </div>
@@ -325,14 +325,14 @@ export function StyleControls({
         </Card>
 
         {/* Error Correction */}
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-0 shadow-lg bg-white/80 dark:bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Zap className="h-5 w-5 text-yellow-600" />
               Error Correction
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-4 w-4 text-gray-400 hover:text-gray-600 cursor-help" />
+                  <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">
@@ -362,7 +362,7 @@ export function StyleControls({
                   <SelectItem key={option.value} value={option.value}>
                     <div className="flex flex-col">
                       <span>{option.label}</span>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-muted-foreground">
                         {option.description}
                       </span>
                     </div>
@@ -374,10 +374,10 @@ export function StyleControls({
         </Card>
 
         {/* Size & Border */}
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-0 shadow-lg bg-white/80 dark:bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
-              <Settings className="h-5 w-5 text-gray-600" />
+              <Settings className="h-5 w-5 text-muted-foreground" />
               Size & Border
             </CardTitle>
             <CardDescription>
@@ -388,7 +388,7 @@ export function StyleControls({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium">Output Size</Label>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {config.size} × {config.size}px
                 </span>
               </div>
@@ -401,7 +401,7 @@ export function StyleControls({
                 disabled={disabled}
                 className="w-full"
               />
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span>256px</span>
                 <span>1024px</span>
                 <span>2048px</span>
@@ -413,7 +413,7 @@ export function StyleControls({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium">Border Width</Label>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {config.border} modules
                 </span>
               </div>
@@ -426,7 +426,7 @@ export function StyleControls({
                 disabled={disabled}
                 className="w-full"
               />
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span>0</span>
                 <span>5</span>
                 <span>10</span>
@@ -438,7 +438,7 @@ export function StyleControls({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium">QR Radius</Label>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {config.qr_radius}px
                 </span>
               </div>
@@ -453,7 +453,7 @@ export function StyleControls({
                 disabled={disabled}
                 className="w-full"
               />
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span>0px</span>
                 <span>25px</span>
                 <span>50px</span>
@@ -463,14 +463,14 @@ export function StyleControls({
         </Card>
 
         {/* Output Optimization */}
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-0 shadow-lg bg-white/80 dark:bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Layers className="h-5 w-5 text-indigo-600" />
               Output Optimization
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-4 w-4 text-gray-400 hover:text-gray-600 cursor-help" />
+                  <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">
@@ -488,7 +488,7 @@ export function StyleControls({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium">Compression Level</Label>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {config.compress_level}/9
                 </span>
               </div>
@@ -503,7 +503,7 @@ export function StyleControls({
                 disabled={disabled}
                 className="w-full"
               />
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span>Fast</span>
                 <span>Balanced</span>
                 <span>Small</span>
@@ -517,7 +517,7 @@ export function StyleControls({
                 <Label className="text-sm font-medium">
                   Color Quantization
                 </Label>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {config.quantize_colors} colors
                 </span>
               </div>
@@ -532,7 +532,7 @@ export function StyleControls({
                 disabled={disabled}
                 className="w-full"
               />
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span>2 colors</span>
                 <span>64 colors</span>
                 <span>256 colors</span>

@@ -132,8 +132,8 @@ export function LogoUpload({
           className={`border-2 border-dashed transition-colors ${
             isDragActive
               ? isDragReject
-                ? "border-red-500 bg-red-50"
-                : "border-blue-500 bg-blue-50"
+                ? "border-red-500 bg-red-50 dark:bg-red-950/30"
+                : "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
               : "border-muted-foreground/25 hover:border-muted-foreground/50"
           } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
         >
@@ -191,11 +191,11 @@ export function LogoUpload({
                   <img
                     src={logoPreview}
                     alt="Logo preview"
-                    className="w-16 h-16 object-contain bg-gray-50 rounded border"
+                    className="w-16 h-16 object-contain bg-muted rounded border"
                   />
                 ) : (
-                  <div className="w-16 h-16 bg-gray-100 rounded border flex items-center justify-center">
-                    <ImageIcon className="h-6 w-6 text-gray-400" />
+                  <div className="w-16 h-16 bg-muted rounded border flex items-center justify-center">
+                    <ImageIcon className="h-6 w-6 text-muted-foreground" />
                   </div>
                 )}
               </div>
@@ -230,7 +230,7 @@ export function LogoUpload({
 
       {/* Upload Error */}
       {uploadError && (
-        <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded border border-red-200">
+        <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 p-3 rounded border border-red-200 dark:border-red-900">
           <AlertCircle className="h-4 w-4 flex-shrink-0" />
           {uploadError}
         </div>

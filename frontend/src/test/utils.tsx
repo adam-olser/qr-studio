@@ -1,5 +1,6 @@
 import { render, RenderOptions } from "@testing-library/react";
 import { ReactElement } from "react";
+import { ThemeProvider } from "../hooks/useTheme";
 
 // Mock QR generation hook for testing
 export const mockUseQRGeneration = {
@@ -44,7 +45,7 @@ export const mockUseQRGeneration = {
 const customRender = (
   ui: ReactElement,
   options?: Omit<RenderOptions, "wrapper">
-) => render(ui, options);
+) => render(ui, { wrapper: ThemeProvider, ...options });
 
 export * from "@testing-library/react";
 export { customRender as render };

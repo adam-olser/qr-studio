@@ -72,7 +72,7 @@ export function URLInput({
   const getValidationMessage = () => {
     if (validation?.error) {
       return (
-        <div className="flex items-center gap-2 text-sm text-red-600 mt-1">
+        <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 mt-1">
           <AlertCircle className="h-3 w-3" />
           {validation.error}
         </div>
@@ -81,7 +81,7 @@ export function URLInput({
 
     if (validation?.warning) {
       return (
-        <div className="flex items-center gap-2 text-sm text-yellow-600 mt-1">
+        <div className="flex items-center gap-2 text-sm text-yellow-600 dark:text-yellow-400 mt-1">
           <AlertCircle className="h-3 w-3" />
           {validation.warning}
         </div>
@@ -90,7 +90,7 @@ export function URLInput({
 
     if (validation?.valid && value.trim()) {
       return (
-        <div className="flex items-center gap-2 text-sm text-green-600 mt-1">
+        <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 mt-1">
           <CheckCircle className="h-3 w-3" />
           URL is valid and ready for QR generation
         </div>
@@ -202,13 +202,13 @@ export function URLInput({
 
       {/* URL Info */}
       {value.trim() && validation?.valid && (
-        <div className="text-xs text-muted-foreground bg-blue-50 p-2 rounded border border-blue-200">
+        <div className="text-xs text-muted-foreground bg-blue-50 dark:bg-blue-950/30 p-2 rounded border border-blue-200 dark:border-blue-900">
           <div className="flex items-center gap-1">
             <Globe className="h-3 w-3" />
             <span>
               Length: {value.length} characters
               {value.length > 1000 && (
-                <span className="text-yellow-600 ml-1">
+                <span className="text-yellow-600 dark:text-yellow-400 ml-1">
                   (Large QR codes may be harder to scan)
                 </span>
               )}
