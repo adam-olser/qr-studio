@@ -37,6 +37,14 @@ uvicorn app.main:app --reload
 cd frontend && npm install && npm run dev
 ```
 
+**Testing:**
+
+```bash
+cd frontend
+npm test              # unit tests
+npm run test:e2e      # Playwright visual/e2e tests
+```
+
 ### 🚀 Production Deployment
 
 Deploy for **FREE** using GitHub and Render.com:
@@ -79,7 +87,7 @@ curl "http://localhost:8000/api/v1/qr/validate-url?url=https://example.com"
 - **Backend**: FastAPI, Python, Pillow, qrcode, Redis
 - **Frontend**: React 18, TypeScript, Vite, shadcn/ui, Tailwind CSS
 - **Deployment**: GitHub Actions, Render.com, GitHub Pages
-- **Testing**: Vitest, pytest, mypy, pytest-asyncio
+- **Testing**: Vitest, Playwright, pytest, mypy, pytest-asyncio
 
 ## 📖 Documentation
 
